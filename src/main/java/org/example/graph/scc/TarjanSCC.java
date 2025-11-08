@@ -76,27 +76,30 @@ public class TarjanSCC {
         if (components.isEmpty()) run();
         int k = components.size();
         int n = g.size();
+
         int[] compId = new int[n];
-        Arrays.fill(compId, -1);
         for (int i = 0; i < components.size(); i++) {
-            for (int v : components.get(i)) compId[v] = i;
+            for (int v : components.get(i)) {
+                compId[v] = i;
+            }
         }
 
         Graph dag = new Graph(k, true);
-        Set<Long> seen = new HashSet<>();
+        Set<String> addedEdges = new HashSet<>();
 
         for (int u = 0; u < n; u++) {
             for (Edge e : g.edgesFrom(u)) {
-                int cu = compId[u], cv = compId[e.to];
+                int cu = compId[u];
+                int cv = compId[e.to];
                 if (cu != cv) {
-                    long key = (((long) cu) << 32) | (cv & 0xffffffffL);
-                    if (!seen.contains(key)) {
-                        seen.add(key);
+                    String key = cu + "-" + cv;
+                    if (addedEdges.add(key)) {
                         dag.addEdge(cu, cv, e.weight);
                     }
                 }
             }
         }
+
         return new CondensationResult(components, compId, dag);
     }
 }

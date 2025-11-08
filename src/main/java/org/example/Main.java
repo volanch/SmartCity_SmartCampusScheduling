@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String path = args.length > 0 ? args[0] : "data/tasks.json";
+        String path = args.length > 0 ? args[0] : "data/small_graphs.json";
 
         Graph g = GraphLoader.loadFromJson(path);
         Metrics metrics = new Metrics();

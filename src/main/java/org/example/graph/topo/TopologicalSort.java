@@ -11,7 +11,9 @@ import java.util.List;
 
 public class TopologicalSort {
     public static List<Integer> kahn(Graph dag, Metrics metrics) {
-        if (metrics == null) metrics = new Metrics();
+        if (metrics == null){
+            metrics = new Metrics();
+        }
         int n = dag.size();
         int[] indeg = new int[n];
         for (int u = 0; u < n; u++) {
@@ -36,7 +38,9 @@ public class TopologicalSort {
             }
         }
 
-        if (order.size() != n) throw new IllegalStateException("Graph is not a DAG (cycle detected)");
+        if (order.size() != n){
+            throw new IllegalStateException("Graph is not a DAG");
+        }
         return order;
     }
 }
