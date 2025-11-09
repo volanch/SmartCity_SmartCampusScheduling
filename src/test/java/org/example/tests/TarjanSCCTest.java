@@ -2,6 +2,7 @@ package org.example.tests;
 
 
 import org.example.graph.model.Graph;
+import org.example.graph.scc.CondensationResult;
 import org.example.graph.scc.TarjanSCC;
 import org.example.util.Metrics;
 import org.junit.jupiter.api.Test;
@@ -13,16 +14,51 @@ import static org.junit.jupiter.api.Assertions.*;
 class TarjanSCCTest {
 
     @Test
-    void twoCyclesAndTail() {
-        Graph g = new Graph(7, true);
-        g.addEdge(0,1,1); g.addEdge(1,2,1); g.addEdge(2,0,1);
-        g.addEdge(3,4,1); g.addEdge(4,3,1);
-        g.addEdge(5,6,1);
-        TarjanSCC t = new TarjanSCC(g, new Metrics());
-        List<List<Integer>> comps = t.run();
-        assertTrue(comps.stream().anyMatch(c -> c.size() == 3));
-        assertTrue(comps.stream().anyMatch(c -> c.size() == 2));
-        long singles = comps.stream().filter(c -> c.size() == 1).count();
-        assertTrue(singles >= 2);
+    void testSingleNode() {
+        Graph g = new Graph(1, true);
+        TarjanSCC scc = new TarjanSCC(g, new Metrics());
+        List<List<Integer>> components = scc.run();
+
+        assertEquals(1, components.size());
+        assertEquals(List.of(0), components.get(0));
+    }
+
+    @Test
+    void testSimpleCycle() {
+        Graph g = new Graph(3, true);
+        g.addEdge(0, 1, 1);
+        g.addEdge(1, 2, 1);
+        g.addEdge(2, 0, 1);
+
+        TarjanSCC scc = new TarjanSCC(g, new Metrics());
+        List<List<Integer>> components = scc.run();
+
+        assertEquals(1, components.size());
+        assertTrue(components.get(0).containsAll(List.of(0,1,2)));
+    }
+
+    @Test
+    void testDisconnectedGraph() {
+        Graph g = new Graph(4, true);
+        g.addEdge(0, 1, 1);
+        g.addEdge(2, 3, 1);
+
+        TarjanSCC scc = new TarjanSCC(g, new Metrics());
+        List<List<Integer>> components = scc.run();
+
+        assertEquals(4, components.size());
+    }
+
+    @Test
+    void testCondensationDag() {
+        Graph g = new Graph(4, true);
+        g.addEdge(0, 1, 1);
+        g.addEdge(1, 0, 1); // cycle 0-1
+        g.addEdge(2, 3, 1);
+
+        TarjanSCC scc = new TarjanSCC(g, new Metrics());
+        CondensationResult cr = scc.buildCondensation();
+
+        assertEquals(3, cr.condensationGraph.size());
     }
 }

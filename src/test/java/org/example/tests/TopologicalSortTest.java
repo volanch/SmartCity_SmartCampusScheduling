@@ -13,23 +13,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class TopologicalSortTest {
 
     @Test
-    void simpleDag() {
-        Graph g = new Graph(4, true);
-        g.addEdge(0,1,1);
-        g.addEdge(1,2,1);
-        g.addEdge(1,3,1);
+    void testSimpleDAG() {
+        Graph g = new Graph(3, true);
+        g.addEdge(0, 1, 1);
+        g.addEdge(1, 2, 1);
 
         List<Integer> order = TopologicalSort.kahn(g, new Metrics());
+
+        assertEquals(3, order.size());
         assertTrue(order.indexOf(0) < order.indexOf(1));
         assertTrue(order.indexOf(1) < order.indexOf(2));
-        assertTrue(order.indexOf(1) < order.indexOf(3));
-        assertEquals(4, order.size());
     }
 
     @Test
-    void throwsOnCycle() {
-        Graph g = new Graph(3, true);
-        g.addEdge(0,1,1); g.addEdge(1,2,1); g.addEdge(2,0,1);
-        assertThrows(IllegalStateException.class, () -> TopologicalSort.kahn(g, new Metrics()));
+    void testSingleNode() {
+        Graph g = new Graph(1, true);
+        List<Integer> order = TopologicalSort.kahn(g, new Metrics());
+        assertEquals(List.of(0), order);
+    }
+
+    @Test
+    void testCycleThrows() {
+        Graph g = new Graph(2, true);
+        g.addEdge(0, 1, 1);
+        g.addEdge(1, 0, 1);
+
+        assertThrows(IllegalStateException.class,
+                () -> TopologicalSort.kahn(g, new Metrics()));
     }
 }

@@ -5,7 +5,7 @@ import org.example.util.Metrics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-public final class DagShortestPath {
+public class DagShortestPath {
     public static final long INF = Long.MAX_VALUE / 4;
     public static final class Result {
         public final long[] dist;
