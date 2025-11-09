@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class DagLongestPath {
-    public static final class Result {
+public class DagLongestPath {
+    public static class Result {
         public final long[] best;
         public final int[] parent;
         public final int argmax;
